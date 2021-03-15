@@ -95,7 +95,13 @@ class CacheStatTracker(BaseCache):
 
     @send_signal
     def touch(self, *args, **kwargs):
-        return self.cache.touch(*args, **kwargs)
+        try:
+            return self.cache.touch(*args, **kwargs)
+        except AttributeError:
+            # The touch was introduced in Django 2.1
+            # https://github.com/django/django/pull/7610
+            # ugly workaround
+            return True
 
     @send_signal
     def delete(self, *args, **kwargs):

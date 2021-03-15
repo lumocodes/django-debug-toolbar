@@ -4,7 +4,10 @@ from collections import OrderedDict
 from django.http.request import RawPostDataException
 from django.template.loader import render_to_string
 from django.templatetags.static import static
-from django.urls import path
+try:
+    from django.urls import re_path
+except ImportError:
+    from django.conf.urls import url as re_path
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
@@ -28,8 +31,8 @@ class HistoryPanel(Panel):
     @classmethod
     def get_urls(cls):
         return [
-            path("history_sidebar/", views.history_sidebar, name="history_sidebar"),
-            path("history_refresh/", views.history_refresh, name="history_refresh"),
+            re_path("^history_sidebar/$", views.history_sidebar, name="history_sidebar"),
+            re_path("^history_refresh/$", views.history_refresh, name="history_refresh"),
         ]
 
     @property

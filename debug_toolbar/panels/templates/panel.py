@@ -9,7 +9,10 @@ from django.db.models.query import QuerySet, RawQuerySet
 from django.template import RequestContext, Template
 from django.test.signals import template_rendered
 from django.test.utils import instrumented_test_render
-from django.urls import path
+try:
+    from django.urls import re_path
+except ImportError:
+    from django.conf.urls import url as re_path
 from django.utils.translation import gettext_lazy as _
 
 from debug_toolbar.panels import Panel
@@ -160,7 +163,7 @@ class TemplatesPanel(Panel):
 
     @classmethod
     def get_urls(cls):
-        return [path("template_source/", views.template_source, name="template_source")]
+        return [re_path("^template_source/$", views.template_source, name="template_source")]
 
     def enable_instrumentation(self):
         template_rendered.connect(self._store_template_info)

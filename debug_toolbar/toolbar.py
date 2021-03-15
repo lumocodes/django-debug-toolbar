@@ -9,7 +9,11 @@ from django.apps import apps
 from django.core.exceptions import ImproperlyConfigured
 from django.template import TemplateSyntaxError
 from django.template.loader import render_to_string
-from django.urls import path, resolve
+try:
+    from django.urls import re_path
+except ImportError:
+    from django.conf.urls import url as re_path
+from django.urls import resolve
 from django.urls.exceptions import Resolver404
 from django.utils.module_loading import import_string
 
@@ -126,7 +130,7 @@ class DebugToolbar:
             # Load URLs in a temporary variable for thread safety.
             # Global URLs
             urlpatterns = [
-                path("render_panel/", views.render_panel, name="render_panel")
+                re_path("^render_panel/$", views.render_panel, name="render_panel")
             ]
             # Per-panel URLs
             for panel_class in cls.get_panel_classes():

@@ -4,7 +4,10 @@ from copy import copy
 from pprint import saferepr
 
 from django.db import connections
-from django.urls import path
+try:
+    from django.urls import re_path
+except ImportError:
+    from django.conf.urls import url as re_path
 from django.utils.translation import gettext_lazy as _, ngettext_lazy as __
 
 from debug_toolbar.panels import Panel
@@ -131,9 +134,9 @@ class SQLPanel(Panel):
     @classmethod
     def get_urls(cls):
         return [
-            path("sql_select/", views.sql_select, name="sql_select"),
-            path("sql_explain/", views.sql_explain, name="sql_explain"),
-            path("sql_profile/", views.sql_profile, name="sql_profile"),
+            re_path("^sql_select/$", views.sql_select, name="sql_select"),
+            re_path("^sql_explain/$", views.sql_explain, name="sql_explain"),
+            re_path("^sql_profile/$", views.sql_profile, name="sql_profile"),
         ]
 
     def enable_instrumentation(self):
